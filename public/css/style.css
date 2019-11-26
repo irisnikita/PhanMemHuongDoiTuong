@@ -1,0 +1,14 @@
+.ml-0{
+    padding-left: 0 ;
+}
+.size-120{
+    width: 120px !important;
+}
+.mt-20{
+    margin-top: 30px;
+}
+.btn:hover .far{
+    
+    position: relative;
+    top: 1px;
+}
