@@ -1,132 +1,52 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+import { connect } from 'react-redux';
 
 //Components
 import Staff from '../../commponents/staff';
+import Editstaff from '../../commponents/editstaff';
+
+//action
+import { actFetchStaffRequest } from '../../actions/index';
 
 import './../staffmanager/style.css';
 
 class StaffManagerPage extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
-      liststaff: [
-      ]
+      liststaff: [],
+      message: false
     };
   }
 
-  componentDidMount(){
-      axios
-      .get('http://localhost:5000/')
-      .then(res=>{
-          this.setState({
-              liststaff: res.data.nhanvien
-          })
-      })
-      .catch(err=>{
-          console.log(err);
-      })
+  componentDidMount() {
+    this.props.fetchAllStaffs();
+    console.log(this.props.history)
+  }
+  UNSAFE_componentWillReceiveProps(nextProps) {
   }
 
-  onEdit=(index)=>{
+  onEdit = index => {
     console.log(index);
-  }
+  };
 
-  showRowStaff = () => {
-    let { liststaff = {} } = this.state;
+  showRowStaff = staffs => {
     let result = null;
 
-    result = liststaff.map((staff, index) => {
-      return (
-          <Staff key={index} staff={staff} index={index}/>
-        );
+    result = staffs.map((staff, index) => {
+      return <Staff key={index} staff={staff} index={index} />;
     });
 
     return result;
   };
 
   render() {
+    let { staffs } = this.props;
     return (
-      <div className='container-fluid'>
+      <div className='container-fluid relative-main'>
         <h2>Quản lý nhân viên</h2>
-        <div className='row'>
-          <div className='col-12 col-sm-6'>
-            <form>
-              <div className='form-row'>
-                <div className='form-group col-6 pl-0'>
-                  <label htmlFor='msnv'>Mã số nhân viên</label>
-                  <input
-                    id='msnv'
-                    className='form-control'
-                    type='number'
-                    name=''
-                  />
-                </div>
-                <div className='form-group col-6 pl-0'>
-                  <label htmlFor='phone'>Số điện thoại</label>
-                  <input
-                    id='phone'
-                    className='form-control'
-                    type='number'
-                    name=''
-                  />
-                </div>
-              </div>
-              <div className='form-row'>
-                <div className='form-group col-6 pl-0'>
-                  <label htmlFor='name'>Họ tên</label>
-                  <input
-                    id='name'
-                    className='form-control'
-                    type='text'
-                    name=''
-                  />
-                </div>
-                <div className='form-group col-6 pl-0'>
-                  <label htmlFor='address'>Địa chỉ</label>
-                  <input
-                    id='address'
-                    className='form-control'
-                    type='text'
-                    name=''
-                  />
-                </div>
-              </div>
-              <div className='form-row'>
-                <div className='form-group col-6 pl-0'>
-                  <label htmlFor='my-input'>Text</label>
-                  <input
-                    id='my-input'
-                    className='form-control'
-                    type='text'
-                    name=''
-                  />
-                </div>
-                <div className='form-group col-6 pl-0'>
-                  <label htmlFor='my-input'>Text</label>
-                  <input
-                    id='my-input'
-                    className='form-control'
-                    type='text'
-                    name=''
-                  />
-                </div>
-              </div>
-            </form>
-          </div>
-          <div className='col-0 col-sm-6'>
-            <div className='mt-20'>
-              <button type='button' className='btn btn-primary size-120 mr-20'>
-                <i className='fas fa-plus'></i>
-                Thêm
-              </button>
-              <button type='button' className='btn btn-info size-120  mr-20'>
-                <i className='fas fa-search'></i>
-                Tìm
-              </button>
-            </div>
-          </div>
-        </div>
+        <Editstaff />
         <table className='table'>
           <thead>
             <tr className='table-danger'>
@@ -140,13 +60,23 @@ class StaffManagerPage extends Component {
               <th>Hành động</th>
             </tr>
           </thead>
-          <tbody>
-            {this.showRowStaff()}
-           </tbody>
+          <tbody >{this.showRowStaff(staffs)}</tbody>
         </table>
       </div>
     );
   }
 }
+const mapStateToProps = state => {
+  return {
+    staffs: state.Staffs
+  };
+};
+const mapDispatchToProps = (dispatch, props) => {
+  return {
+    fetchAllStaffs: () => {
+      dispatch(actFetchStaffRequest());
+    }
+  };
+};
 
-export default StaffManagerPage;
+export default connect(mapStateToProps, mapDispatchToProps)(StaffManagerPage);

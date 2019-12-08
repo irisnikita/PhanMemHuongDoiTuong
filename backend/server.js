@@ -19,7 +19,8 @@ conn.connect((err)=>{
     (err)? console.log(err):console.log('connect success');
 })
 
-require('./routes/html-routes')(app,conn);
+require('./routes/staffsRouter')(app,conn);
+require('./routes/UserLogin')(app,conn)
 
 app.listen(PORT,()=>{
     console.log(`App running on port ${PORT}`);
